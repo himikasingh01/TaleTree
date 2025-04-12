@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Meaning Helper</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 40px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        #meaning-result {
+            margin-top: 30px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Simple Meanings</h1>
+
+    <form method="GET" onsubmit="event.preventDefault(); searchMeaning();">
+        <input type="text" id="word-input" name="word" placeholder="Enter a word" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="meaning-result">
+        {% if searched_word %}
+            <p><strong>{{ searched_word }}:</strong> {{ meaning }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        async function searchMeaning() {
+            const word = document.getElementById('word-input').value;
+            const response = await fetch(`?word=${word}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            const data = await response.json();
+            document.getElementById('meaning-result').innerHTML = `<p><strong>${word}:</strong> ${data.meaning}</p>`;
+        }
+    </script>
+</body>
+</html>
