@@ -1,97 +1,74 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f9f9f9, #e0f7fa);
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            background-color: #ffffff;
-            padding: 25px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #00bcd4;
-        }
-
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            background-color: #00bcd4;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0097a7;
-        }
-
-        .nav-links {
-            margin-top: 20px;
-        }
-
-        .nav-links a {
-            color: #00bcd4;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Login</h1>
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        {% if error %}
-            <p class="error">{{ error }}</p>
-        {% endif %}
-    </form>
-    <div class="nav-links">
-        <a href="{% url 'register' %}">Register</a>
+<body class="bg-white">
+
+  <div class="flex h-screen">
+    <!-- Left Side Image -->
+    <div class="hidden md:block w-1/2 bg-cover bg-center" style="background-image: url('{% static 'images/story-bg.jpg' %}');">
     </div>
+
+    <!-- Right Side Form -->
+    <div class="w-full md:w-1/2 flex items-center justify-center px-6">
+      <div class="max-w-md w-full space-y-6">
+        <div class="text-center">
+          <h2 class="text-3xl font-bold text-gray-800">Sign in to your Account</h2>
+          <p class="text-sm text-gray-500 mt-1">Welcome back! Please sign in to continue</p>
+        </div>
+
+        <form method="post" class="space-y-4">
+          {% csrf_token %}
+          <input type="text" name="username" placeholder="Username" class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+          
+          <!-- Password Field with Toggle -->
+          <div class="relative">
+            <input type="password" id="password" name="password" placeholder="Password"
+              class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-10" required>
+            <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-600 text-lg"
+              onclick="togglePassword()">
+              👁️
+            </span>
+          </div>
+
+          <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition duration-200">
+            Login
+          </button>
+
+          {% if error %}
+            <p class="text-red-600 text-sm">{{ error }}</p>
+          {% endif %}
+        </form>
+
+        <p class="text-center text-sm text-gray-500">
+          Don’t have an account?
+          <a href="{% url 'register' %}" class="text-indigo-600 font-semibold hover:underline">Register</a>
+        </p>
+
+        <p class="text-center text-xs text-gray-400 pt-4">Powered by <strong>Kidso</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle Password Script -->
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const icon = event.target;
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        passwordInput.type = "password";
+        icon.textContent = "👁️";
+      }
+    }
+  </script>
+
 </body>
 </html>
