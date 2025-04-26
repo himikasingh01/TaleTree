@@ -1,43 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My Story Library</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 40px;
-            background: #f5f5f5;
-        }
-        h1 {
-            text-align: center;
-        }
-        .story-card {
-            background: white;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 700px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .story-card h3 {
-            margin-bottom: 10px;
-        }
-        .story-card p {
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>📚 My Story Library</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f9f7f1, #e0d7c6);
+      font-family: 'Georgia', serif;
+      color: #4B3832;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1200px;
+      padding: 40px 20px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.8em;
+      color: #5e412f;
+      margin-bottom: 40px;
+      font-weight: bold;
+      text-shadow: 1px 1px #ccc;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .book-card {
+      background: #fffaf3;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+    }
+
+    .book-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 320px;
+      background-size: cover;
+      background-position: center;
+      background-color: #ddd;
+    }
+
+    .book-content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .book-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #5e412f;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+
+    .created-at {
+      font-size: 0.9em;
+      color: #a88a77;
+    }
+
+    .empty-message {
+      font-size: 1.5em;
+      text-align: center;
+      margin-top: 50px;
+      color: #999;
+    }
+
+    /* Popup Styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .popup {
+      background: #fffaf3;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      animation: zoomFade 0.5s ease forwards;
+    }
+
+    .popup img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      object-fit: cover;
+    }
+
+    .popup h2 {
+      margin-top: 0;
+      color: #5e412f;
+      font-size: 1.8em;
+    }
+
+    .popup p {
+      text-align: left;
+      color: #5b4636;
+      font-size: 1.1em;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #7b4c2d;
+      color: white;
+      border: none;
+      font-size: 1.5em;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+      line-height: 35px;
+    }
+
+    @keyframes zoomFade {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.2em;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <h1>📚 My Story Library</h1>
+
+<div class="container">
+  <h1>📚 My Story Library</h1>
+
+  {% if stories %}
+  <div class="book-grid">
     {% for story in stories %}
-        <div class="story-card">
-            <h3>{{ story.prompt }}</h3>
-            <small>Created on {{ story.created_at|date:"F j, Y, g:i a" }}</small>
-            <p>{{ story.content }}</p>
-        </div>
-    {% empty %}
-        <p style="text-align: center;">No stories yet. Start creating!</p>
+    {% comment %} Random Cartoon Covers {% endcomment %}
+    {% with cartoon_images="https://cdn-icons-png.flaticon.com/512/2946/2946035.png,https://cdn-icons-png.flaticon.com/512/2946/2946015.png,https://cdn-icons-png.flaticon.com/512/2946/2946023.png,https://cdn-icons-png.flaticon.com/512/2946/2946002.png,https://cdn-icons-png.flaticon.com/512/2946/2946041.png,https://cdn-icons-png.flaticon.com/512/2946/2946055.png" %}
+    {% with random_cartoon=cartoon_images|cut:","|random %}
+    <div class="book-card" onclick="openPopup('{{ story.prompt|escapejs }}', '{{ story.created_at|date:"F j, Y, g:i a" }}', '{{ story.content|escapejs }}', '{% if story.image %}{{ story.image.url }}{% else %}{{ random_cartoon }}{% endif %}')">
+      <div class="book-cover" 
+           style="background-image: url('{% if story.image %}{{ story.image.url }}{% else %}{{ random_cartoon }}{% endif %}');">
+      </div>
+      <div class="book-content">
+        <div class="book-title">{{ story.prompt }}</div>
+        <div class="created-at">{{ story.created_at|date:"F j, Y" }}</div>
+      </div>
+    </div>
+    {% endwith %}
+    {% endwith %}
     {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-message">
+    <p>No stories yet. Start creating your magical book! 📖</p>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Popup -->
+<div id="popup-overlay" class="popup-overlay" onclick="closePopup(event)">
+  <div class="popup" id="popup">
+    <button class="close-btn" onclick="closePopup(event)">×</button>
+    <img id="popup-image" src="" alt="Story Image">
+    <h2 id="popup-title"></h2>
+    <div class="created-at" id="popup-date"></div>
+    <p id="popup-content"></p>
+  </div>
+</div>
+
+<script>
+  function openPopup(title, date, content, imageUrl) {
+    document.getElementById('popup-title').innerText = title;
+    document.getElementById('popup-date').innerText = `Created on ${date}`;
+    document.getElementById('popup-content').innerText = content;
+    document.getElementById('popup-image').src = imageUrl;
+    document.getElementById('popup-overlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';  // lock background scroll
+  }
+
+  function closePopup(e) {
+    if (e.target.id === 'popup-overlay' || e.target.className === 'close-btn') {
+      document.getElementById('popup-overlay').style.display = 'none';
+      document.body.style.overflow = 'auto'; // unlock background scroll
+    }
+  }
+</script>
+
 </body>
 </html>

@@ -1,51 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Word Meaning Helper</title>
     <style>
+        /* General Styling */
         body {
-            font-family: Arial;
-            text-align: center;
+            font-family: 'Arial', sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
         }
-        input, button {
-            padding: 10px;
-            margin: 10px;
+
+        h1 {
+            font-size: 2.5em;
+            color: #4A90E2;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
             font-size: 16px;
+            outline: none;
+            width: 60%;
+            margin-right: 10px;
+            transition: border-color 0.3s ease;
         }
+
+        input[type="text"]:focus {
+            border-color: #4A90E2;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        /* Meaning Result Styling */
         #meaning-result {
-            margin-top: 30px;
-            font-size: 1.2em;
+            font-size: 1.3em;
             color: #333;
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            transition: opacity 0.3s ease;
         }
+
+        #meaning-result p {
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4A90E2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        /* Spinner Animation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
     </style>
 </head>
+
 <body>
-    <h1>Find Simple Meanings</h1>
 
-    <form method="GET" onsubmit="event.preventDefault(); searchMeaning();">
-        <input type="text" id="word-input" name="word" placeholder="Enter a word" required>
-        <button type="submit">Search</button>
-    </form>
+    <div class="container">
+        <h1>Find Simple Meanings</h1>
 
-    <div id="meaning-result">
-        {% if searched_word %}
-            <p><strong>{{ searched_word }}:</strong> {{ meaning }}</p>
-        {% endif %}
+        <form method="GET" onsubmit="event.preventDefault(); searchMeaning();">
+            <input type="text" id="word-input" name="word" placeholder="Enter a word" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Loader -->
+        <div id="loader" class="loader" style="display: none;"></div>
+
+        <!-- Meaning Result -->
+        <div id="meaning-result">
+            <!-- Meaning will be displayed here -->
+        </div>
     </div>
 
     <script>
         async function searchMeaning() {
             const word = document.getElementById('word-input').value;
+
+            // Show loader while fetching
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('meaning-result').style.display = 'none';
+
+            // Fetch word meaning from the backend
             const response = await fetch(`?word=${word}`, {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
+
+            // Parse the JSON response
             const data = await response.json();
-            document.getElementById('meaning-result').innerHTML = `<p><strong>${word}:</strong> ${data.meaning}</p>`;
+
+            // Display the meaning
+            const resultDiv = document.getElementById('meaning-result');
+            resultDiv.innerHTML = `<p><strong>${word}:</strong> ${data.meaning}</p>`;
+            resultDiv.style.display = 'block';
+
+            // Hide loader after the meaning is displayed
+            document.getElementById('loader').style.display = 'none';
         }
     </script>
+
 </body>
+
 </html>
