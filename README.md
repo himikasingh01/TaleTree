@@ -72,13 +72,12 @@
 ---
 
 ### 🚧 Future Scope
-- Add Text-to-Speech
+- Add Payment gateways to get more credit points
 
 - User login + save custom libraries
 
 - Story voice narration
 
--
 - Multi-language stories
 
 
