@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 import random
 
 # Load your API key
-genai.configure(api_key=os.getenv("GEMINI_API_KEY", "AIzaSyAbQwpW-7878kMqd7PVDOt5dOGoCqXQVhI"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE"))
 model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
 def landing_page(request):
@@ -100,7 +100,7 @@ def story_library(request):
 def word_meaning(request):
     if request.method == "GET" and request.GET.get("word"):
         word = request.GET.get("word")
-        url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+        url = f"https://api.dictionaryapi.dev/" 
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
